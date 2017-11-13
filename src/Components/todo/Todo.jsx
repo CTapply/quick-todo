@@ -42,6 +42,7 @@ const styles = {
 
 class Todo extends Component {
   static propTypes = {
+    handleToggle: PropTypes.func.isRequired,
     editTodo: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
     id: PropTypes.string.isRequired,
@@ -65,10 +66,6 @@ class Todo extends Component {
     this.state = {};
   }
 
-  componentWillUpdate = (props) => {
-    console.log(`Updated Props! ${props.isCompleted}`);
-  }
-
   saveTodo = () => {
     this.setState({ isEditing: false });
     this.props.editTodo({
@@ -82,6 +79,11 @@ class Todo extends Component {
 
   deleteTodo = () => {
     this.props.deleteTodo(this.props.id);
+  }
+
+  handleToggle = () => {
+    console.log('Clicked on the checkbox');
+    this.props.handleToggle(this.props.id);
   }
 
   renderCompleteIcon = () => (
@@ -119,6 +121,7 @@ class Todo extends Component {
         >
           <CardContent className={this.props.classes.todoList} >
             <Checkbox
+              onClick={this.handleToggle}
               checkedIcon={this.renderCompleteIcon()}
               icon={this.renderIncompleteIcon()}
               className={this.props.classes.checkBoxIncomplete}
@@ -134,7 +137,8 @@ class Todo extends Component {
           </CardContent>
         </Card>
       </div>
-    )};
+    );
+  };
 }
 
 export default withStyles(styles)(Todo);

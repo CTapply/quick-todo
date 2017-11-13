@@ -98,11 +98,11 @@ class App extends Component {
     this.base.removeBinding(this.ref);
   }
 
-  createTodo = (post) => {
-    const postWithUUID = post;
-    postWithUUID.uuid = this.state.currentUuid;
+  createTodo = (todo) => {
+    const todoWithUUID = todo;
+    todoWithUUID.uuid = this.state.currentUuid;
     const newTodoRef = firebase.database().ref(`users/${this.state.currentUuid}/todos`).push();
-    newTodoRef.set(postWithUUID);
+    newTodoRef.set(todoWithUUID);
   }
 
   deleteTodo = (id) => {

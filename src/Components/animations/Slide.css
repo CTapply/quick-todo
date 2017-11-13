@@ -1,0 +1,8 @@
+
+.collapsable-list {
+  transform-origin: top;
+  position: relative;
+  z-index: 2;
+  /* transition: transform 300ms ease-in-out; */
+}
+

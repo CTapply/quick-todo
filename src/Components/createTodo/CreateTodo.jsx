@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardContent } from 'material-ui/Card';
+import IconButton from 'material-ui/IconButton';
 import Popover from 'material-ui/Popover';
 import Typography from 'material-ui/Typography';
 import Input from 'material-ui/Input';
@@ -11,18 +12,37 @@ const styles = {
   root: {
     padding: '5px !important',
   },
+  createTodoBox: {
+    position: 'relative',
+    'z-index': '1000',
+  },
   newTodoTextBox: {
-    margin: '0px',
-    width: 'calc(100% - 42px)',
+    margin: '0px 0px 0px 0px',
+    width: 'calc(100% - 76px)',
+  },
+  toggleListShown: {
+    width: '34px',
+    height: '34px',
+    float: 'left',
+    transform: 'translateY(2px)',
+    transition: 'transform 300ms ease-in-out',
+  },
+  toggleListHidden: {
+    transform: 'rotate(-90deg)',
   },
 };
 
 class CreateTodo extends Component {
   static propTypes = {
     onSave: PropTypes.func.isRequired,
+    todosHidden: PropTypes.bool.isRequired,
+    handleTodoListToggle: PropTypes.func.isRequired,
     classes: PropTypes.shape({
       root: PropTypes.string,
+      createTodoBox: PropTypes.string,
       newTodoTextBox: PropTypes.string,
+      toggleListShown: PropTypes.string,
+      toggleListHidden: PropTypes.string,
     }).isRequired,
   }
 
@@ -37,6 +57,7 @@ class CreateTodo extends Component {
   componentDidMount() {
     document.getElementById('title-input').focus();
     window.addEventListener('keypress', this.handleEnterKey);
+    if (this.props.todosHidden) document.getElementById('list-toggle-carret').classList.add(this.props.classes.toggleListHidden);
   }
 
   componentWillUnmount() {
@@ -52,6 +73,12 @@ class CreateTodo extends Component {
   toggleCalendar = () => (this.state.isRecurring
     ? this.setState({ isRecurring: false })
     : this.setState({ isRecurring: true, recurringTodoPopOverOpen: true }));
+
+  toggleCarret = () => {
+    const element = document.getElementById('list-toggle-carret');
+    element.classList.toggle(this.props.classes.toggleListHidden);
+    this.props.handleTodoListToggle();
+  }
 
   handleRequestClose = () => {
     this.setState({
@@ -134,9 +161,30 @@ class CreateTodo extends Component {
     </svg>
   )
 
+  renderDropDownIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 50 50"
+      version="1.1"
+      style={{ width: '24px', height: '24px' }}
+    >
+      <g id="surface1">
+        <path d="M 44.988281 13.984375 C 44.726563 13.992188 44.476563 14.101563 44.292969 14.292969 L 25 33.585938 L 5.707031 14.292969 C 5.519531 14.097656 5.261719 13.992188 4.992188 13.988281 C 4.582031 13.992188 4.21875 14.238281 4.0625 14.613281 C 3.910156 14.992188 4 15.421875 4.292969 15.707031 L 24.292969 35.707031 C 24.683594 36.097656 25.316406 36.097656 25.707031 35.707031 L 45.707031 15.707031 C 46.003906 15.421875 46.09375 14.980469 45.9375 14.601563 C 45.777344 14.222656 45.402344 13.976563 44.988281 13.984375 Z " />
+      </g>
+    </svg>
+  )
+
   render = () => (
-    <Card raised elevation={4} >
+    <Card raised elevation={4} className={this.props.classes.createTodoBox} >
       <CardContent classes={{ root: this.props.classes.root }} >
+        <IconButton
+          id="list-toggle-carret"
+          className={this.props.classes.toggleListShown}
+          aria-label="Toggle Todos"
+          onClick={this.toggleCarret}
+        >
+          {this.renderDropDownIcon()}
+        </IconButton>
         <Input
           placeholder="New Task"
           className={this.props.classes.newTodoTextBox}
